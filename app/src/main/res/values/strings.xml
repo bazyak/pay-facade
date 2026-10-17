@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pay Facade</string>
+
+    <string name="section_card">Card</string>
+    <string name="setting_countdown">Countdown</string>
+    <string name="unit_seconds">s</string>
+
+    <string name="section_buzz">Vibration</string>
+    <string name="setting_buzz_start">Buzz on start</string>
+    <string name="setting_buzz_finish">Buzz on finish</string>
+    <string name="setting_buzz_length">Length</string>
+    <string name="unit_milliseconds">ms</string>
+
+    <string name="section_about">About</string>
+    <string name="setting_accessibility">Accessibility</string>
+    <string name="state_granted">Granted</string>
+    <string name="state_tap_to_grant">Tap to grant</string>
+    <string name="setting_google_pay_takeover">Replace Google Pay</string>
+    <string name="setting_unlock_window">Takeover window</string>
+    <string name="setting_version">Version</string>
+
+    <string name="accessibility_text">Replaces Google Pay with Pay Facade when the payment screen opens.</string>
+    <string name="section_warmup">Warm-up</string>
+    <string name="setting_warmup">Warm up Mir Pay</string>
+    <string name="section_takeover">Takeover</string>
+    <string name="section_takeover_apps">Apps</string>
+    <string name="section_takeover_lock">Screen lock</string>
+    <string name="setting_custom_takeover">Replace any app</string>
+    <string name="setting_clear_custom_takeover">Clear package</string>
+    <string name="state_not_set">Tap to set</string>
+    <string name="input_package_label">Package name</string>
+    <string name="toast_invalid_package">Not a valid package name</string>
+    <string name="toast_own_package">That is this app itself</string>
+</resources>

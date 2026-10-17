@@ -1,0 +1,142 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+// Build number lives in version.properties and is bumped after every assemble, so each build
+// that leaves the machine carries a distinct versionCode. Reading happens at configuration time
+// and bumping only after an assemble task, so a plain Gradle sync does not inflate the number.
+def versionPropsFile = file('version.properties')
+def versionProps = new Properties()
+if (versionPropsFile.exists()) {
+    versionPropsFile.withInputStream { versionProps.load(it) }
+}
+def buildNumber = (versionProps['VERSION_CODE'] ?: '1').toInteger()
+
+tasks.register('bumpVersionCode') {
+    doLast {
+        versionProps['VERSION_CODE'] = (buildNumber + 1).toString()
+        versionPropsFile.withOutputStream { versionProps.store(it, null) }
+        println "versionCode bumped to ${buildNumber + 1}"
+    }
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name.startsWith('assemble')) {
+        task.finalizedBy 'bumpVersionCode'
+    }
+}
+
+
+android {
+    namespace 'com.bazyak.payfacade'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.bazyak.payfacade"
+        minSdk 26
+        targetSdk 34
+        versionCode buildNumber
+        versionName "1.0.$buildNumber"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    // Name the output after the app and the version instead of the module, so a file sitting in
+    // Downloads still says what it is. A release build is the one people receive, so it gets the
+    // clean name - "Pay Facade - 1.0.17.apk" - and only debug carries a suffix to tell the two apart.
+    applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach { output ->
+            def suffix = variant.buildType.name == 'release' ? '' : " (${variant.buildType.name})"
+            output.outputFileName = "Pay Facade - ${variant.versionName}${suffix}.apk"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    buildFeatures {
+        compose true
+        buildConfig true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.5.14'
+    }
+    packaging {
+        resources {
+            it.excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+}
+
+dependencies {
+    // Core
+    implementation "androidx.core:core-ktx:1.13.1"
+
+    // Compose
+    implementation platform('androidx.compose:compose-bom:2024.06.00')
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.core:core-splashscreen:1.0.1'
+    androidTestImplementation platform('androidx.compose:compose-bom:2024.06.00')
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation('androidx.compose.ui:ui-tooling-preview:1.6.8')
+
+    implementation "androidx.activity:activity-compose:1.9.1"
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.8.4"
+    implementation "androidx.wear.compose:compose-foundation:1.4.1"
+    implementation "androidx.wear.compose:compose-material:1.4.1"
+
+    // Wear
+    implementation "androidx.wear:wear:1.4.0"
+    // System text input screen (keyboard, handwriting, voice) for the package name setting.
+    implementation "androidx.wear:wear-input:1.2.0-alpha02"
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+}
+
+// One command to build, install and make it fast: ./gradlew deployRelease
+//
+// An APK installed with adb is left for ART to warm up through the JIT, which is why the app feels
+// sluggish right after install. Asking for full ahead-of-time compilation fixes that immediately,
+// and the result survives reboots - but it has to be asked for, which is what the second step
+// below does. (A baseline profile would be the tidier answer, but it only takes effect once the
+// system runs its background dexopt job, and on a watch that can be a long wait.)
+def adbPath = { "${android.sdkDirectory}/platform-tools/adb" }
+def appIdentifier = { android.defaultConfig.applicationId }
+
+tasks.register('installReleaseApk', Exec) {
+    description = 'Installs the freshly built release APK on the connected device.'
+    dependsOn 'assembleRelease'
+    doFirst {
+        def apk = fileTree("$buildDir/outputs/apk/release") { include '*.apk' }
+            .files.max { it.lastModified() }
+        commandLine adbPath(), 'install', '-r', apk.absolutePath
+        println "installing ${apk.name}"
+    }
+}
+
+tasks.register('aotCompileOnDevice', Exec) {
+    description = 'Forces ahead-of-time compilation of the installed app on the connected device.'
+    commandLine adbPath(), 'shell', 'cmd', 'package', 'compile', '-m', 'speed', '-f', appIdentifier()
+    ignoreExitValue = true
+}
+
+tasks.register('deployRelease') {
+    group = 'install'
+    description = 'Builds, installs and ahead-of-time compiles the release build.'
+    dependsOn 'installReleaseApk'
+    finalizedBy 'aotCompileOnDevice'
+}

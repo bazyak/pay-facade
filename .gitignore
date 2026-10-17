@@ -1,0 +1,36 @@
+# Gradle: caches and build output
+.gradle/
+.kotlin/
+build/
+
+# Machine-specific SDK path, written by Android Studio
+/local.properties
+
+# Android Studio / IntelliJ project state
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Signed builds Android Studio drops next to the module, and APKs/bundles anywhere
+/app/release/
+/app/debug/
+*.apk
+*.aab
+*.ap_
+
+# Signing keys and their passwords - never commit these
+*.jks
+*.keystore
+keystore.properties
+
+# macOS
+.DS_Store
+
+# Debug leftovers in the project root: watch logs and UI dumps
+*.log
+/*.xml
+
+# The Gradle wrapper jar is needed to build; keep it even if a global rule ignores jars
+!gradle/wrapper/gradle-wrapper.jar

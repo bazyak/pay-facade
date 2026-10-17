@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="section_card">Карта</string>
+    <string name="setting_countdown">Отсчёт</string>
+    <string name="unit_seconds"> с</string>
+
+    <string name="section_buzz">Вибрация</string>
+    <string name="setting_buzz_start">В начале</string>
+    <string name="setting_buzz_finish">В конце</string>
+    <string name="setting_buzz_length">Длительность</string>
+    <string name="unit_milliseconds"> мс</string>
+
+    <string name="section_about">О приложении</string>
+    <string name="setting_accessibility">Спец. возможности</string>
+    <string name="state_granted">Выдано</string>
+    <string name="state_tap_to_grant">Нажмите, чтобы выдать</string>
+    <string name="setting_google_pay_takeover">Перехват Google Pay</string>
+    <string name="setting_unlock_window">Окно перехвата</string>
+    <string name="setting_version">Версия</string>
+
+    <string name="accessibility_text">Подменяет Google Pay на Pay Facade при открытии экрана оплаты.</string>
+    <string name="section_warmup">Прогрев</string>
+    <string name="setting_warmup">Прогревать Mir Pay</string>
+    <string name="section_takeover">Перехват</string>
+    <string name="section_takeover_apps">Приложения</string>
+    <string name="section_takeover_lock">Блокировка экрана</string>
+    <string name="setting_custom_takeover">Перехват приложения</string>
+    <string name="setting_clear_custom_takeover">Сбросить пакет</string>
+    <string name="state_not_set">Нажмите, чтобы задать</string>
+    <string name="input_package_label">Имя пакета</string>
+    <string name="toast_invalid_package">Некорректное имя пакета</string>
+    <string name="toast_own_package">Это само приложение</string>
+</resources>

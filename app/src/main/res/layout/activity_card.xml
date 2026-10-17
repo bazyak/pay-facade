@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The launch screen, deliberately built from plain views rather than Compose. It is what opens at
+  a terminal, so it has to be up instantly; Compose would have to warm up first, and on watch
+  hardware without ahead-of-time compilation that warm-up is the whole of the startup delay.
+  Sizes are set in code from the screen size so the proportions hold on any watch.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cardRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <ImageView
+        android:id="@+id/walletIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_wallet_cards" />
+
+    <TextView
+        android:id="@+id/secondsLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
+</FrameLayout>
